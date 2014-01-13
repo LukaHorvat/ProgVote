@@ -105,7 +105,7 @@ app.post("/submitvotes", function (request, response) {
         response.end("success");
 });
 
-mongoose.connect("mongodb://localhost:27017");
+mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost:27017");
 var db = mongoose.connection;
 db.once("open", function () {
     console.log("Connected to db");
@@ -116,5 +116,5 @@ var Question = mongoose.model("Question", new mongoose.Schema({
     votes: Number
 }));
 
-app.listen(8442);
+app.listen(process.env.PORT || 8442);
 
