@@ -32,22 +32,50 @@ app.configure(function() {
 });
 //endregion
 
+var voterCache = {};
+
 app.get("/", function (request, response) {
+	if (voterCache[request.ip] === undefined) {
+		voterCache[request.ip] = {};
+	}
+
+	var questions = [];
 	Question.find(function (err, q) {
-		q.sort(function (q1, q2) { return q2.votes - q1.votes; } );
-		response.render("index", { questions: q });
+		for (var question in q) {
+			var newQuestion:any = {};
+			newQuestion.text = q[question].text;
+			newQuestion.votes = q[question].votes;
+
+			if (voterCache[request.ip][q[question]._id] === undefined) {
+				voterCache[request.ip][q[question]._id] = false;
+			}
+			newQuestion.upVote = voterCache[request.ip][q[question]._id];
+			newQuestion.id = q[question]._id;
+
+			questions.push(newQuestion);
+		}
+		questions.sort(function (q1, q2) { return q2.votes - q1.votes; } );
+		response.render("index", { "questions": questions });
 	});
 });
 
-app.post("/submit", function (request, response) {
-	console.log(request.param("question"));
-	var q = new Question({
-		text: request.param("question"),
-		votes: 0
-	});
-	q.save(function (err, obj) {
-		console.log("Question " + request.param("question") + " saved to db");
-		response.redirect("/");
+app.post("/submitvote", function (request, response) {
+	if (voterCache[request.ip][request.body["question"]] === undefined) {
+		response.end("failed");
+		return;
+	}
+	var currentVote = voterCache[request.ip][request.body["question"]];
+	voterCache[request.ip][request.body["question"]] = !currentVote;
+
+	Question.findById(request.body["question"], function (err, obj) {
+		if (obj != null) {
+			if (currentVote == false) obj.votes++;
+			else obj.votes--;
+			obj.save(function () {
+				response.end("success");
+			});
+		}
+		else response.end("success");
 	});
 });
 
@@ -83,7 +111,6 @@ var Question = mongoose.model("Question",  new mongoose.Schema({
 	text: String,
 	votes: Number
 }));
-
 
 
 app.listen(8442);

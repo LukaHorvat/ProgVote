@@ -2,7 +2,7 @@ body {
   background-color: #585858;
 }
 body * {
-  font-family: "Open Sans";
+  font-family: "Titillium Web";
   font-weight: 300;
 }
 #content {
@@ -14,7 +14,7 @@ body * {
   border-radius: 3px;
   padding: 10px;
 }
-.title_text {
+.title-text {
   font-size: 30px;
 }
 .line {
@@ -24,8 +24,8 @@ body * {
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.minor_heading {
-  font-size: 20px;
+.minor-heading {
+  font-size: 22px;
   margin-bottom: 5px;
 }
 .stretch {
@@ -43,4 +43,8 @@ body * {
 }
 .align-right {
   float: right;
+}
+.question-text {
+  line-height: 20px;
+  color: #000;
 }

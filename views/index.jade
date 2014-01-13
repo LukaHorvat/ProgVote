@@ -1,6 +1,8 @@
 doctype
 head
 	link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css')
+	link(href='http://fonts.googleapis.com/css?family=Titillium+Web:400,300' rel='stylesheet' type='text/css')
+	link(href='http://fonts.googleapis.com/css?family=Exo+2:400,300' rel='stylesheet' type='text/css')
 	link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css")
 	link(rel="stylesheet" href="/global.css")
 body
@@ -10,6 +12,14 @@ body
 	script.
 		$(document).ready(function () {
 			voteMap = {};
+
+			$(".vote-button").each(function () {
+				var upVote = $(this).attr("upvoted");
+				if (upVote === undefined) upVote = false;
+				else upVote = true;
+				voteMap[$(this).attr("qid")] = upVote;
+				if (upVote) $(this).parent().parent().find(".input-group-addon").css("background-color", "#DDFFDD");
+			});
 			$(".vote-button").click(function () {
 				var current = $(this).parent().parent().find(".input-group-addon").css("background-color");
 
@@ -19,8 +29,19 @@ body
 				$(this).parent().parent().find(".input-group-addon").css("background-color", current);
 
 				var id = $(this).attr("qid");
-				if (voteMap[id] !== true) voteMap[id] = true;
-				else voteMap[id] = false;
+				var votes = parseInt($(this).parent().parent().find(".badge").html());
+				if (voteMap[id] !== true) {
+					voteMap[id] = true;
+					$(this).parent().parent().find(".badge").html(votes + 1);
+				}
+				else {
+					voteMap[id] = false;
+					$(this).parent().parent().find(".badge").html(votes - 1);
+				}
+
+				$.post( "/submitvote", { question: id }, function( data ) {
+					console.log(data);
+				});
 			});
 
 			$("#submit-button").click(function () {
@@ -30,20 +51,19 @@ body
 			});
 		});
 	#content
-		.title_text ProgVote
+		.title-text ProgVote
 		div.line
-		.minor_heading Enter a new question
+		.minor-heading Enter a new question
 		form(action="/submit" method="post")
 			input(type="text" class="form-control" name="question" placeholder="Question")
 		br
-		.minor_heading Vote on questions
-		button.btn.btn-default.stretch#submit-button(type="button") Submit votes
+		.minor-heading Vote on questions
 		each question in questions
 			.input-group.stretch.space-up
-				.input-group-addon.stretch
+				.input-group-addon.stretch.question-text
 					= question.text      
 					span.badge.align-right
 						= question.votes
 				span.input-group-btn
-					button.btn.btn-default.vote-button(type="button", qid=question.id)
+					button.btn.btn-default.vote-button(type="button", qid=question.id, upvoted=question.upVote)
 						span.glyphicon.glyphicon-ok
