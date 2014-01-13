@@ -77,32 +77,16 @@ else
     });
 });
 
-app.post("/submitvotes", function (request, response) {
-    console.log(request.body);
-    var count = 0;
-    for (var q in request.body)
-        count++;
-    for (var question in request.body) {
-        if (request.body[question] === "true") {
-            Question.findById(question, function (err, obj) {
-                if (obj !== null) {
-                    obj.votes++;
-                    obj.save(function (err, obj) {
-                        count--;
-                        if (count === 0)
-                            response.end("success");
-                    });
-                } else {
-                    count--;
-                    if (count === 0)
-                        response.end("success");
-                }
-            });
-        } else
-            count--;
-    }
-    if (count === 0)
-        response.end("success");
+app.post("/submit", function (request, response) {
+    console.log(request.param("question"));
+    var q = new Question({
+        text: request.param("question"),
+        votes: 0
+    });
+    q.save(function (err, obj) {
+        console.log("Question " + request.param("question") + " saved to db");
+        response.redirect("/");
+    });
 });
 
 mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost:27017");
