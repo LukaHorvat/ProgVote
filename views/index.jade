@@ -1,0 +1,49 @@
+doctype
+head
+	link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css')
+	link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css")
+	link(rel="stylesheet" href="/global.css")
+body
+	script(src="http://code.jquery.com/jquery-1.10.1.min.js")
+	script(src="http://code.jquery.com/jquery-migrate-1.2.1.min.js")
+	script(src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js")
+	script.
+		$(document).ready(function () {
+			voteMap = {};
+			$(".vote-button").click(function () {
+				var current = $(this).parent().parent().find(".input-group-addon").css("background-color");
+
+				if (current.toLowerCase() === "rgb(238, 238, 238)") current = "#DDFFDD";
+				else current = "#EEE";
+
+				$(this).parent().parent().find(".input-group-addon").css("background-color", current);
+
+				var id = $(this).attr("qid");
+				if (voteMap[id] !== true) voteMap[id] = true;
+				else voteMap[id] = false;
+			});
+
+			$("#submit-button").click(function () {
+				$.post( "/submitvotes", voteMap, function( data ) {
+					location.reload();
+				});
+			});
+		});
+	#content
+		.title_text ProgVote
+		div.line
+		.minor_heading Enter a new question
+		form(action="/submit" method="post")
+			input(type="text" class="form-control" name="question" placeholder="Question")
+		br
+		.minor_heading Vote on questions
+		button.btn.btn-default.stretch#submit-button(type="button") Submit votes
+		each question in questions
+			.input-group.stretch.space-up
+				.input-group-addon.stretch
+					= question.text      
+					span.badge.align-right
+						= question.votes
+				span.input-group-btn
+					button.btn.btn-default.vote-button(type="button", qid=question.id)
+						span.glyphicon.glyphicon-ok

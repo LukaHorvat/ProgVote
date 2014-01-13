@@ -1,0 +1,46 @@
+body {
+  background-color: #585858;
+}
+body * {
+  font-family: "Open Sans";
+  font-weight: 300;
+}
+#content {
+  width: 800px;
+  background-color: #d3d3d3;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  border-radius: 3px;
+  padding: 10px;
+}
+.title_text {
+  font-size: 30px;
+}
+.line {
+  background-color: #000;
+  width: 100%;
+  height: 1px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.minor_heading {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+.stretch {
+  width: 100%;
+}
+.btn:focus {
+  outline-color: transparent !important;
+}
+.space-up {
+  margin-top: 4px;
+}
+#submit-button {
+  background-color: #fff2da;
+  height: 50px;
+}
+.align-right {
+  float: right;
+}

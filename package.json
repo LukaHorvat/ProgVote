@@ -1,0 +1,19 @@
+{
+  "name": "ProgVote",
+  "version": "0.0.0",
+  "description": "Vote for a programming FAQ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {	
+  	"express"	        : "*",
+  	"jade"		        : "*",
+  	"stylus"	        : "*",
+    "nib"             	: "*",
+    "mongoose"        	: "*"
+  },
+  "repository": "",
+  "author": "Luka Horvat",
+  "license": "BSD"
+}
