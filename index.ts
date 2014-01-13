@@ -34,9 +34,22 @@ app.configure(function() {
 
 var voterCache = {};
 
+var getIp = function (request: express.Request): string {
+	var ipAddr = request.headers["x-forwarded-for"];
+	if (ipAddr) {
+		var list = ipAddr.split(",");
+		ipAddr = list[list.length-1];
+	} else {
+		ipAddr = request.ip;
+	}
+	return ipAddr;
+}
+
 app.get("/", function (request, response) {
-	if (voterCache[request.ip] === undefined) {
-		voterCache[request.ip] = {};
+	var ipAddr = getIp(request);
+
+	if (voterCache[ipAddr] === undefined) {
+		voterCache[ipAddr] = {};
 	}
 
 	var questions = [];
@@ -46,10 +59,10 @@ app.get("/", function (request, response) {
 			newQuestion.text = q[question].text;
 			newQuestion.votes = q[question].votes;
 
-			if (voterCache[request.ip][q[question]._id] === undefined) {
-				voterCache[request.ip][q[question]._id] = false;
+			if (voterCache[ipAddr][q[question]._id] === undefined) {
+				voterCache[ipAddr][q[question]._id] = false;
 			}
-			newQuestion.upVote = voterCache[request.ip][q[question]._id];
+			newQuestion.upVote = voterCache[ipAddr][q[question]._id];
 			newQuestion.id = q[question]._id;
 
 			questions.push(newQuestion);
@@ -60,12 +73,14 @@ app.get("/", function (request, response) {
 });
 
 app.post("/submitvote", function (request, response) {
-	if (voterCache[request.ip][request.body["question"]] === undefined) {
+	var ipAddr = getIp(request);
+
+	if (voterCache[ipAddr][request.body["question"]] === undefined) {
 		response.end("failed");
 		return;
 	}
-	var currentVote = voterCache[request.ip][request.body["question"]];
-	voterCache[request.ip][request.body["question"]] = !currentVote;
+	var currentVote = voterCache[ipAddr][request.body["question"]];
+	voterCache[ipAddr][request.body["question"]] = !currentVote;
 
 	Question.findById(request.body["question"], function (err, obj) {
 		if (obj != null) {
