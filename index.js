@@ -4,6 +4,11 @@
 var express = require("express");
 var mongoose = require("mongoose");
 var stylus = require("stylus"), nib = require("nib");
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 
 //beginregion Ugly setup stuff
 var app = express();
@@ -13,17 +18,17 @@ var compile = function (str, path) {
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(express.logger('dev'));
+
+
+app.use(logger('dev'));
 app.use(stylus.middleware({
     src: __dirname + '/public',
     compile: compile
 }));
-app.configure(function () {
-    app.use(express.static('public'));
-    app.use(express.cookieParser());
-    app.use(express.bodyParser());
-    app.use(app.router);
-});
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 //endregion
 var voterCache = {};
