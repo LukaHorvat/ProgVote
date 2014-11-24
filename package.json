@@ -1,24 +1,24 @@
 {
   "name": "ProgVote",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Vote for a programming FAQ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {	
-  	"express"	        : "*",
-  	"jade"		        : "*",
-  	"stylus"	        : "*",
-    "nib"             	: "*",
+  	"express"	        : "~4.10.2",
+  	"jade"		        : "~1.7.0",
+  	"stylus"	        : "~0.49.3",
+    "nib"             	: "~1.0.4",
     "body-parser":        "~1.8.1",
     "cookie-parser":      "~1.3.3",
     "morgan":             "~1.3.0",
     "serve-favicon":      "~2.1.3",
     "debug":              "~2.0.0",
-    "mongoose":           "*"
+    "mongoose":           "~3.8.19"
   },
-  "repository": "",
+  "repository": "https://github.com/LukaHorvat/ProgVote",
   "author": "Luka Horvat",
   "license": "BSD"
 }
